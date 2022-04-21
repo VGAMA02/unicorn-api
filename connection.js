@@ -1,10 +1,11 @@
 var mysql = require('mysql');
 var connection = mysql.createPool({
   host: 'localhost',
-  user: 'tanke', 
-  password: 'Pr3ttyW0m4n',
+  user: 'root', 
+  password: '',
   database: 'Unicorn',
-  charset: 'utf8mb4'
+  charset: 'utf8mb4',
+  port:  '33065'
 });
 
 
