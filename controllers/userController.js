@@ -39,34 +39,53 @@ async function addUser(req,res){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async function login(req,res){
     try {
-       let exist = await userModel.getPasswordByEmail(req.body.email)
-       let idUser = await userModel.getIdUserByEmail(req.body.email)
-       console.log(idUser)
-       idUser = JSON.parse(idUser['idUser']);
-       console.log(idUser)
-       console.log(req.body)
-       if(!exist){
+        console.log("Login");
+       if(req.body.email == "" || req.body.password == ""){
             let data = {
-                Message: "Datos incorrectos"
+                status: true,
+                idUser
+            }
+            console.log("Vacios");
+            res.send(data);
+            return; 
+       }
+       let exist = await userModel.getPasswordByEmail(req.body.email);
+       let idUser = await userModel.getIdUserByEmail(req.body.email);
+       console.log(exist);
+       console.log(idUser);
+       
+       if(!exist || idUser == undefined){
+            let data = {
+                Message: "Datos incorrectos",
+                status: false   
             }
             res.send(data);
-            return
+            return;
        }
+       console.log("IDuser: " + idUser);
+       idUser = JSON.parse(idUser['idUser']);
+
+       console.log(req.body);
        if(await security.bcryptCompareFunc(req.body.password,exist.password))
        {
            let data = {
                status: true,
                idUser
            }
+           //console.log(data);
            res.send(data);
+           return;
        }
        else
        {
             let data = {
+                status: false,
                 Message: "Datos incorrectos"
             }
+            console.log("check");
             res.send(data);
-            return
+            return;
+            
        }
     }catch (ex) {
         console.log(ex);

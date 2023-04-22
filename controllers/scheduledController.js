@@ -58,7 +58,6 @@ async function changeScheduled(req,res){
             }
             res.send(data);
         }
-       
     }catch (ex) {
         console.log(ex);
         let data = {
@@ -100,40 +99,6 @@ async function changeScheduledStatus(req,res){
     }
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-async function getIncomesByDate(req,res){
-    try {
-        console.log("body:");
-        console.log(req.body);
-        console.log("array devuelto:");
-        let incomes = await scheduledModel.getIncomesByIdAndDate(req.body.id,req.body.startDate,req.body.days);
-        console.log(incomes);
-        if(!incomes){
-            let data = {
-                Message: 'No se en contraron incomes en estas fechas',
-                status: false
-            }
-            res.send(data);
-            return
-        }
-        else{
-           
-            let data = {
-                status: true,
-                incomes
-            }
-            res.send(data);
-        }        
-    }catch (ex) {
-        console.log(ex);
-        let data = {
-            errorMessage: constants.CATCH_MESSAGE,
-            errorData: ex,
-            status: false
-        }
-        res.status(500).send(data);
-    }
-}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async function getIncomesByIdUser(req,res){
     try {
         console.log("body:");
@@ -150,7 +115,6 @@ async function getIncomesByIdUser(req,res){
             return
         }
         else{
-           
             let data = {
                 status: true,
                 incomes
@@ -184,39 +148,6 @@ async function getOutflowsByIdUser(req,res){
             return
         }
         else{
-           
-            let data = {
-                status: true,
-                outflows
-            }
-            res.send(data);
-        }        
-    }catch (ex) {
-        console.log(ex);
-        let data = {
-            errorMessage: constants.CATCH_MESSAGE,
-            errorData: ex,
-            status: false
-        }
-        res.status(500).send(data);
-    }
-}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-async function getOutflowsByDate(req,res){
-    try {
-        let outflows = await scheduledModel.getOutflowsByIdAndDate(req.body.id,req.body.startDate,req.body.days);
-        console.log(outflows);
-        if(!outflows){
-            let data = {
-                Message: 'No se en contraron incomes en estas fechas',
-                status: false
-            }
-            res.send(data);
-            return
-        }
-        else{
-            console.log("----------------------------------------------------");
-            //console.log(req.body);
             let data = {
                 status: true,
                 outflows
@@ -237,7 +168,6 @@ async function getOutflowsByDate(req,res){
 async function getScheduledByIdScheduledIdUser(req,res){
     try {
         let scheduled = await scheduledModel.getScheduledById(req.body.idScheduled,req.body.idUser);
-        //console.log(status);
         if(!scheduled){
             let data = {
                 Message: 'No se en contraron incomes en estas fechas',
@@ -247,7 +177,6 @@ async function getScheduledByIdScheduledIdUser(req,res){
             return
         }
         else{
-            //console.log(req.body);
             let data = {
                 status: true,
                 scheduled
@@ -270,7 +199,6 @@ async function getScheduledByIdScheduledIdUser(req,res){
 async function getSchedulesByDate(req,res){
     try {
         let schedules = await scheduledModel.getSchedulesByUserIdAndDate(req.body.id,req.body.startDate,req.body.days);
-        //console.log(status);
         if(!schedules){
             let data = {
                 Message: 'No se en contraron incomes en estas fechas',
@@ -280,7 +208,6 @@ async function getSchedulesByDate(req,res){
             return
         }
         else{
-            //console.log(req.body);
             let data = {
                 status: true,
                 schedules
@@ -303,7 +230,6 @@ async function getSchedulesByDate(req,res){
 async function getAllSchedules(req,res){
     try {
         let schedules = await scheduledModel.getSchedulesByUserId(req.body.id);
-        //console.log(status);
         if(!schedules){
             let data = {
                 Message: 'No se en contraron incomes en estas fechas',
@@ -313,7 +239,6 @@ async function getAllSchedules(req,res){
             return
         }
         else{
-            //console.log(req.body);
             let data = {
                 status: true,
                 schedules
@@ -348,7 +273,6 @@ async function getSchedulesByIdOptions(req,res){
         }
         else{
         }
-        //console.log(status);
         if(!schedules){
             let data = {
                 Message: 'No se en contraron incomes en estas fechas',
@@ -358,7 +282,6 @@ async function getSchedulesByIdOptions(req,res){
             return
         }
         else{
-            //console.log(req.body);
             let data = {
                 status: true,
                 schedules
@@ -394,7 +317,6 @@ async function getSaldoActual(req,res){
             return
         }
         else{
-            //console.log(req.body);
             let data = {
                 status: true,
                 saldo
@@ -420,7 +342,7 @@ async function getSaldoFuturo(req,res){
         console.log("id:" + req.body.id + "  dias: " +  req.body.days);
         let saldoExist = await scheduledModel.getSaldoFuturoByIdAndDays(req.body.id,req.body.days);
         console.log(saldoExist);
-        let saldo = JSON.parse(saldoExist['saldoFuturo']);
+        let saldofuturo = JSON.parse(saldoExist['saldoFuturo']);
         if(!saldoExist){
             let data = {
                 Message: 'No se en contraron incomes en estas fechas',
@@ -430,10 +352,9 @@ async function getSaldoFuturo(req,res){
             return
         }
         else{
-            //console.log(req.body);
             let data = {
                 status: true,
-                saldo
+                saldofuturo
             }
             console.log('Mandando--------------------------');
             console.log(data);
@@ -450,8 +371,149 @@ async function getSaldoFuturo(req,res){
     }
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-module.exports = {addScheduled,changeScheduled,changeScheduledStatus,getScheduledByIdScheduledIdUser,getIncomesByDate,getOutflowsByDate,getSchedulesByDate,getAllSchedules,getSaldoActual,getSaldoFuturo,
-    getIncomesByIdUser, getOutflowsByIdUser, getSchedulesByIdOptions}
+async function getIngresosFuturos(req,res){ 
+    try {
+        console.log("calculando ingresos futuros");
+        console.log("id:" + req.body.id + "  dias: " +  req.body.days);
+        let saldoExist = await scheduledModel.getIngresosFuturoByIdAndDays(req.body.id,req.body.days);
+        console.log(saldoExist);
+        let ingresosFuturos = JSON.parse(saldoExist['ingresosFuturos']);
+        if(!saldoExist){
+            let data = {
+                Message: 'No se en contraron incomes en estas fechas',
+                status: false
+            }
+            res.send(data);
+            return
+        }
+        else{
+            //console.log(req.body);
+            let data = {
+                status: true,
+                ingresosFuturos
+            }
+            console.log('Mandando Ingresos--------------------------');
+            console.log(data);
+            res.send(data);
+        }        
+    }catch (ex) {
+        console.log(ex);
+        let data = {
+            errorMessage: constants.CATCH_MESSAGE,
+            errorData: ex,
+            status: false
+        }
+        res.status(500).send(data);
+    }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+async function getIngresosLimiter(req,res){ 
+    try {
+        console.log("trayendo ingresos obtenidos por limitador");
+        console.log("id:" + req.body.id + "  limiter: " +  req.body.limiter);
+        let incomes = await scheduledModel.getIncomesByUserIdLimiter(req.body.id,req.body.limiter);
+        console.log(incomes);
+        //let ingresos = JSON.parse(saldoExist);
+        if(!incomes){
+            let data = {
+                Message: 'No se en contraron incomes en estas fechas',
+                status: false
+            }
+            res.send(data);
+            return
+        }
+        else{
+            let data = {
+                status: true,
+                incomes
+            }
+            console.log('Mandando Ingresos--------------------------');
+            console.log(data);
+            res.send(data);
+        }        
+    }catch (ex) {
+        console.log(ex);
+        let data = {
+            errorMessage: constants.CATCH_MESSAGE,
+            errorData: ex,
+            status: false
+        }
+        res.status(500).send(data);
+    }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+async function getEgresosFuturos(req,res){ 
+    try {
+        console.log("calculando egresos futuros");
+        console.log("id:" + req.body.id + "  dias: " +  req.body.days);
+        let saldoExist = await scheduledModel.getEgresosFuturoByIdAndDays(req.body.id,req.body.days);
+        console.log(saldoExist);
+        let egresosFuturos = JSON.parse(saldoExist['egresosFuturos']);
+        if(!saldoExist){
+            let data = {
+                Message: 'No se en contraron incomes en estas fechas',
+                status: false
+            }
+            res.send(data);
+            return
+        }
+        else{
+            let data = {
+                status: true,
+                egresosFuturos
+            }
+            console.log('Mandando Egresos (Amount)-------------------');
+            console.log(data);
+            res.send(data);
+        }        
+    }catch (ex) {
+        console.log(ex);
+        let data = {
+            errorMessage: constants.CATCH_MESSAGE,
+            errorData: ex,
+            status: false
+        }
+        res.status(500).send(data);
+    }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+async function getEgresosLimiter(req,res){ 
+    try {
+        console.log("calculando egresos Limitador");
+        console.log("id:" + req.body.id + "  limiter: " +  req.body.limiter);
+        let outflows = await scheduledModel.getOutflowsByUserIdLimiter(req.body.id,req.body.limiter);
+        console.log(outflows);
+        if(!outflows){
+            let data = {
+                Message: 'No se en contraron outflows en estas fechas',
+                status: false
+            }
+            res.send(data);
+            return
+        }
+        else{
+            //console.log(req.body);
+            let data = {
+                status: true,
+                outflows
+            }
+            console.log('Mandando outflows-------------------');
+            console.log(data);
+            res.send(data);
+        }        
+    }catch (ex) {
+        console.log(ex);
+        let data = {
+            errorMessage: constants.CATCH_MESSAGE,
+            errorData: ex,
+            status: false
+        }
+        res.status(500).send(data);
+    }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+module.exports = {addScheduled,changeScheduled,changeScheduledStatus,getScheduledByIdScheduledIdUser,getSchedulesByDate,getAllSchedules,getSaldoActual,getSaldoFuturo, getIngresosFuturos,
+    getIncomesByIdUser, getOutflowsByIdUser, getSchedulesByIdOptions, getEgresosFuturos,getIngresosLimiter,getEgresosLimiter}
 /*
 {
     "idTypeInput": "0", "amount": 500.50, "descripcion": "dineros :)", "idType": 0, "idUser": 1, "status": 1, "startDate": "2022-02-10", "endDate": null

@@ -6,27 +6,30 @@ function addUser({firstName,lastName,email,birthDate,password}){
 }
 
 function getUserByEmail(email){
-    let query = `SELECT iduser FROM user WHERE email = ?;`
+    let query = `SELECT iduser FROM user WHERE email = ?;`;
     return conexion.runQueryRow(query,[email]);
 }
 
 function getUserById(id){
-    let query = `SELECT user FROM user WHERE idUser = ?;`
+    let query = `SELECT user FROM user WHERE idUser = ?;`;
     return conexion.runQueryRow(query,[id]);
 }
 
 function changeUserStatus(id){
-    let query = `UPDATE user SET status = false WHERE idUser = ? `
+    let query = `UPDATE user SET status = false WHERE idUser = ? `;
     return conexion.runQueryRow(query,[id]);
 }
 
 function getPasswordByEmail(email){
-    let query = `SELECT password FROM user WHERE email = ?`
+    if(email == null){return false;}
+    let query = `SELECT password FROM user WHERE email = ?`;
     return conexion.runQueryRow(query,[email]);
 }
 
 function getIdUserByEmail(email){
-    let query = `SELECT idUser FROM user WHERE email = ?`
+    console.log(email);
+    if(email == null){return false;}
+    let query = `SELECT idUser FROM user WHERE email = ?`;
     return conexion.runQueryRow(query,email);
 }
 

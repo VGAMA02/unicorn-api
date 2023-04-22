@@ -38,8 +38,111 @@ async function addIncome(req,res){
         res.status(500).send(data);
     }
 }
+//FUNCIONES PARA GRAFICOS.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+async function getBiggerIncomesInLastDaysM(req,res){
+    try {
+        console.log("body:");
+        console.log(req.body);
+        console.log("array devuelto de incomes para graficos:");
+        let incomes = await incomeModel.getBiggerIncomesInLastDays(req.body.id,req.body.limiter,req.body.days);
+        console.log(incomes);
+        if(!incomes){
+            let data = {
+                Message: 'No se en contraron incomes en estas fechas',
+                status: false
+            }
+            res.send(data);
+            return
+        }
+        else{
+            let data = {
+                status: true,
+                incomes
+            }
+            res.send(data);
+        }        
+    }catch (ex) {
+        console.log(ex);
+        let data = {
+            errorMessage: constants.CATCH_MESSAGE,
+            errorData: ex,
+            status: false
+        }
+        res.status(500).send(data);
+    }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+async function getIncomesByDate(req,res){
+    try {
+        console.log("body:");
+        console.log(req.body);
+        console.log("array devuelto de incomes:");
+        let incomes = await incomeModel.getIncomesByIdAndDate(req.body.id,req.body.startDate,req.body.days);
+        console.log(incomes);
+        if(!incomes){
+            let data = {
+                Message: 'No se en contraron incomes en estas fechas',
+                status: false
+            }
+            res.send(data);
+            return
+        }
+        else{
+           
+            let data = {
+                status: true,
+                incomes
+            }
+            res.send(data);
+        }        
+    }catch (ex) {
+        console.log(ex);
+        let data = {
+            errorMessage: constants.CATCH_MESSAGE,
+            errorData: ex,
+            status: false
+        }
+        res.status(500).send(data);
+    }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+async function getIncomesAmountByDate(req,res){
+    try {
+        console.log("body:");
+        console.log(req.body);
+        console.log("array devuelto de incomes:");
+        let incomes = await incomeModel.getIncomesAmountInLastDays(req.body.id,req.body.startDate,req.body.days);
+        console.log(incomes);
+        if(!incomes){
+            let data = {
+                Message: 'No se en contraron incomes en estas fechas',
+                status: false
+            }
+            res.send(data);
+            return
+        }
+        else{
+           
+            let data = {
+                status: true,
+                incomes
+            }
+            res.send(data);
+        }        
+    }catch (ex) {
+        console.log(ex);
+        let data = {
+            errorMessage: constants.CATCH_MESSAGE,
+            errorData: ex,
+            status: false
+        }
+        res.status(500).send(data);
+    }
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-module.exports = {addIncome}
+module.exports = {addIncome,getBiggerIncomesInLastDaysM,getIncomesByDate,getIncomesAmountByDate}
 
 /*
 {
